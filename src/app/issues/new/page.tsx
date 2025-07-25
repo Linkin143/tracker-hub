@@ -1,6 +1,7 @@
 'use client';
 
 import ErrorMessage from "@/app/components/ErrorMessage";
+import Spinner from "@/app/components/Spinner";
 import { validationSchemas } from "@/app/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { InfoCircledIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
@@ -24,17 +25,18 @@ const NewIssuePage = () => {
     });
 
     const [error, setError] = useState("");
-
+    const [isSubmitting, setSubmitting] = useState(false);
 
     const onSubmit = async (data: IssueForm, event: any) => {
         console.log("Submitted Data:", data);
         try {
+            setSubmitting(true)
             event.preventDefault();
             await axios.post("/api/issues", data);
             router.push("/issues");
 
         } catch (error) {
-
+            setSubmitting(false);
             setError("An error occurred.");
         }
     };
@@ -60,7 +62,6 @@ const NewIssuePage = () => {
                     </TextField.Slot>
                 </TextField.Root>
                 <ErrorMessage>{errors.title?.message}</ErrorMessage>
-                <ErrorMessage>{errors.description?.message}</ErrorMessage>
                 {/* Description Field */}
                 <Controller
                     name="description"
@@ -68,7 +69,7 @@ const NewIssuePage = () => {
                     render={({ field }) => <SimpleMDE placeholder="Description" {...field} />}
                 />
                 <ErrorMessage>{errors.description?.message}</ErrorMessage>
-                <Button type="submit">Submit New Issue</Button>
+                <Button disabled={isSubmitting} type="submit">Submit New Issue{isSubmitting && <Spinner />}</Button>
             </form>
         </div>
     );
