@@ -1,9 +1,10 @@
 'use client';
 
+import ErrorMessage from "@/app/components/ErrorMessage";
 import { validationSchemas } from "@/app/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { InfoCircledIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import { Button, Callout, Text, TextField } from "@radix-ui/themes";
+import { Button, Callout, TextField } from "@radix-ui/themes";
 import axios from "axios";
 import "easymde/dist/easymde.min.css";
 import dynamic from "next/dynamic";
@@ -33,7 +34,7 @@ const NewIssuePage = () => {
             router.push("/issues");
 
         } catch (error) {
-            
+
             setError("An error occurred.");
         }
     };
@@ -58,15 +59,15 @@ const NewIssuePage = () => {
                         <MagnifyingGlassIcon height="16" width="16" />
                     </TextField.Slot>
                 </TextField.Root>
-                {errors.title && <Text color="red" as="p">{errors.title.message}</Text>}
-                
+                <ErrorMessage>{errors.title?.message}</ErrorMessage>
+                <ErrorMessage>{errors.description?.message}</ErrorMessage>
                 {/* Description Field */}
                 <Controller
                     name="description"
                     control={control}
                     render={({ field }) => <SimpleMDE placeholder="Description" {...field} />}
                 />
-                {errors.description && <Text color="red" as="p">{errors.description.message}</Text>}
+                <ErrorMessage>{errors.description?.message}</ErrorMessage>
                 <Button type="submit">Submit New Issue</Button>
             </form>
         </div>
