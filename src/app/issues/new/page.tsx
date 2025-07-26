@@ -39,6 +39,7 @@ const NewIssuePage = () => {
             setSubmitting(false);
             setError("An error occurred.");
         }
+
     };
 
     return (
