@@ -21,21 +21,21 @@ const IssueDetailPage = async ({ params }: Props) => {
         where: {
             id: parseInt(params.id)
         }
-    })
+    });
 
     if (!IssueDetail) notFound();
 
 
 
     return (
-        <Grid columns={{initial:"1", md:"2"}} gap="5">
+        <Grid columns={{ initial: "1", md: "2" }} gap="5">
             <Box>
                 <IssuesDetail IssueDetail={IssueDetail}></IssuesDetail>
             </Box>
             <Box>
-               <EditIssueButton issueId={IssueDetail.id}>
-                
-               </EditIssueButton>
+                <EditIssueButton issueId={IssueDetail.id}>
+
+                </EditIssueButton>
             </Box>
 
         </Grid>
