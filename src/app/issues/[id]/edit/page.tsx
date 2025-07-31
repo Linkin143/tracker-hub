@@ -4,17 +4,13 @@ import IssueFormWrapper from "./IssueFormWrapper";
 
 const prisma = new PrismaClient();
 
-interface Props {
-  params: {
-    id: string;
-  };
-}
+const IssueEditPage = async ({ params }: { params: { id: string } }) => {
+  const id = Number(params.id);
 
-const IssueEditPage = async ({ params }: Props) => {
+  if (Number.isNaN(id)) notFound(); // optional: handle invalid numeric IDs
+
   const issue = await prisma.issue.findUnique({
-    where: {
-      id: parseInt(params.id),
-    },
+    where: { id },
   });
 
   if (!issue) notFound();

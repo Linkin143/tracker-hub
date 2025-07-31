@@ -6,40 +6,31 @@ import IssuesDetail from "./IssuesDetail";
 
 const prisma = new PrismaClient();
 
-
 interface Props {
-    params: { id: string }
+    params: { id: string };
 }
 
+const IssueDetailPage = async (props: Props) => {
+    const id = Number(props.params.id);
 
-const IssueDetailPage = async ({ params }: Props) => {
+    if (Number.isNaN(id)) notFound();
 
-
-
-    const IssueDetail = await prisma.issue.findUnique({
-
-        where: {
-            id: parseInt(params.id)
-        }
+    const issueDetail = await prisma.issue.findUnique({
+        where: { id },
     });
 
-    if (!IssueDetail) notFound();
-
-
+    if (!issueDetail) notFound();
 
     return (
         <Grid columns={{ initial: "1", md: "2" }} gap="5">
             <Box>
-                <IssuesDetail IssueDetail={IssueDetail}></IssuesDetail>
+                <IssuesDetail IssueDetail={issueDetail} />
             </Box>
             <Box>
-                <EditIssueButton issueId={IssueDetail.id}>
-
-                </EditIssueButton>
+                <EditIssueButton issueId={issueDetail.id} />
             </Box>
-
         </Grid>
-    )
-}
+    );
+};
 
 export default IssueDetailPage;
