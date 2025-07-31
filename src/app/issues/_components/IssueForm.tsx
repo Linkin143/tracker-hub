@@ -9,19 +9,18 @@ import { InfoCircledIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { Button, Callout, TextField } from "@radix-ui/themes";
 import axios from "axios";
 import "easymde/dist/easymde.min.css";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import SimpleMDE from "react-simplemde-editor";
 import { z } from "zod";
 
 type IssueFormData = z.infer<typeof validationSchemas>
 
-const SimpleMDE = dynamic(() => import("react-simplemde-editor"), { ssr: false });
 
 
 
-const IssueForm = ({issue}:{issue?:Issue}) => {
+const IssueForm = ({ issue }: { issue?: Issue }) => {
     const router = useRouter();
     const { register, control, handleSubmit, formState: { errors } } = useForm<IssueFormData>({
         resolver: zodResolver(validationSchemas)
@@ -34,9 +33,15 @@ const IssueForm = ({issue}:{issue?:Issue}) => {
         console.log("Submitted Data:", data);
         try {
             setSubmitting(true)
+
             event.preventDefault();
-            await axios.post("/api/issues", data);
+            if (issue) {
+                await axios.patch(`/api/issues/${issue.id}/`, data)
+            } else {
+                await axios.post("/api/issues", data);
+            }
             router.push("/issues");
+            router.refresh();
 
         } catch (error) {
             setSubmitting(false);
@@ -74,7 +79,10 @@ const IssueForm = ({issue}:{issue?:Issue}) => {
                     render={({ field }) => <SimpleMDE placeholder="Description" {...field} />}
                 />
                 <ErrorMessage>{errors.description?.message}</ErrorMessage>
-                <Button disabled={isSubmitting} type="submit">Submit New Issue{isSubmitting && <Spinner />}</Button>
+                <Button disabled={isSubmitting} type="submit">
+                    {issue ? "Update Issue" : "Submit New Issue"}{" "}
+                    {isSubmitting && <Spinner />}
+                </Button>
             </form>
         </div>
     );
