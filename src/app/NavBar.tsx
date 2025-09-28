@@ -16,7 +16,7 @@ const NavBar = () => {
         },
         {
             lable: "Issues",
-            href: "/issues"
+            href: "/issues/list"
         },
     ]
 
